@@ -1,8 +1,8 @@
 # [Feature][P0] 实现首版「肚子扫描仪」Flutter Android APK
 
-> 建议 Labels：`feature`、`P0`、`flutter`、`android`、`ready-for-agent`<br>
+> 建议 Labels：`feature`、`P0`、`flutter`、`android`<br>
 > 建议 Milestone：`MVP`<br>
-> 当前状态：`Ready for Agent`<br>
+> 当前状态：`Ready for Device QA`<br>
 > 完成流转：`Ready for Agent` → `In Progress` → `Ready for Device QA` → `Done`
 
 ## 目标
@@ -40,12 +40,12 @@ App 是一段离线卡通教育演示。成人横着拿 Android 手机或平板�
 
 | 项目 | 当前状态 | 对本 Issue 的处理 |
 | --- | --- | --- |
-| Flutter 工程 | 未初始化 | Agent 在仓库根目录初始化，仅生成 Android 平台 |
-| Flutter 和依赖精确版本 | 待确认 | 读取本机 stable，写入工具链文件并锁定依赖 |
+| Flutter 工程 | 已初始化 | 仅生成 Android 平台，保留全部文档和 Git 配置 |
+| Flutter 和依赖精确版本 | 已锁定 | Flutter 3.44.7 stable（`.flutter-version`）；`lottie` 3.5.1、`audioplayers` 6.8.1；锁文件已提交 |
 | 正式素材 | 未交付 | 使用同名占位素材完成代码；正式内容验收保持未勾选 |
 | 正式 `applicationId` | 未确认 | 暂用 `com.example.child_doctor_app`；正式发包前只改一次 |
-| 正式签名 | 未提供 | Debug/内部 release 构建继续；keystore 和密码不得进 Git |
-| 最低性能目标机和平板 | 未指定 | 自动化和模拟尺寸先完成；真机性能结论标记 `[待验证]` |
+| 正式签名 | 未提供 | Debug/内部 release 构建继续（release 使用 debug 证书）；keystore 和密码不得进 Git |
+| 最低性能目标机和平板 | 未指定 | 自动化和模拟尺寸已完成；真机性能结论标记 `[待验证]` |
 | 目标年龄和洗手文案内容确认 | 未完成 | 不改固定文案；正式对外使用前由内容负责人确认 |
 
 仅当 Flutter/Android SDK 不存在、工程无法初始化且需要安装新工具，或依赖解析在安全重试后仍受外部网络阻断时，才把开发标为 blocked。报告已执行命令、完整错误和需要的外部操作，不要用猜测代替证据。
@@ -289,58 +289,58 @@ Agent 按顺序执行并在交付说明中逐项报告。代码未完成前不�
 
 ### 1. 工具链和工程
 
-- [ ] 记录 `flutter --version`、`dart --version` 和 Android SDK 状态。
-- [ ] 初始化只含 Android 的 Flutter 工程，保留现有文档和 Git 配置。
-- [ ] 锁定 Flutter/依赖版本并提交锁文件。
-- [ ] 配置 App 名称、API 26、临时 applicationId 和 Android 安全属性。
-- [ ] 更新根 `AGENTS.md` 的真实命令和当前仓库状态。
+- [x] 记录 `flutter --version`、`dart --version` 和 Android SDK 状态。
+- [x] 初始化只含 Android 的 Flutter 工程，保留现有文档和 Git 配置。
+- [x] 锁定 Flutter/依赖版本并提交锁文件。
+- [x] 配置 App 名称、API 26、临时 applicationId 和 Android 安全属性。
+- [x] 更新根 `AGENTS.md` 的真实命令和当前仓库状态。
 
 ### 2. 资源和文案
 
-- [ ] 建立固定文案和资源路径常量，业务 Widget 不复制字符串。
-- [ ] 放入正式素材，或放入格式、路径和时长合规的占位素材。
-- [ ] 逐个声明运行时 assets，生成 Android launcher icon。
-- [ ] 记录所有素材来源、许可和正式/占位状态。
-- [ ] 实现 Lottie 异步预加载；首帧先显示检查室和「正在准备…」。
+- [x] 建立固定文案和资源路径常量，业务 Widget 不复制字符串。
+- [x] 放入正式素材，或放入格式、路径和时长合规的占位素材。
+- [x] 逐个声明运行时 assets，生成 Android launcher icon。
+- [x] 记录所有素材来源、许可和正式/占位状态。
+- [x] 实现 Lottie 异步预加载；首帧先显示检查室和「正在准备…」。
 
 ### 3. 状态和音频
 
-- [ ] 实现 `ExamPhase`、`ResourceStatus` 和只读协调器状态。
-- [ ] 实现全部合法状态迁移、非法事件忽略和先改状态再执行副作用。
-- [ ] 实现递增 `runId`，隔离旧动画、音频和 watchdog 回调。
-- [ ] 注入可控 timer/clock，watchdog 使用动画实际时长加 1,000 ms。
-- [ ] 实现 `ExamAudio`、三个播放器的 `LocalAudio` 和 `FakeExamAudio`。
-- [ ] 确保 `abort`、`stopAll` 和 `dispose` 可重复调用，不泄漏异常或播放器。
+- [x] 实现 `ExamPhase`、`ResourceStatus` 和只读协调器状态。
+- [x] 实现全部合法状态迁移、非法事件忽略和先改状态再执行副作用。
+- [x] 实现递增 `runId`，隔离旧动画、音频和 watchdog 回调。
+- [x] 注入可控 timer/clock，watchdog 使用动画实际时长加 1,000 ms。
+- [x] 实现 `ExamAudio`、三个播放器的 `LocalAudio` 和 `FakeExamAudio`。
+- [x] 确保 `abort`、`stopAll` 和 `dispose` 可重复调用，不泄漏异常或播放器。
 
 ### 4. 界面和动画
 
-- [ ] 实现 `OrientationGate`、竖屏图标和整页 Semantics。
-- [ ] 实现 16:9 舞台、SafeArea、留边和占位颜色 design tokens。
-- [ ] 实现 `ready` 的 loading、ready、failed 三种资源画面。
-- [ ] 实现 `scanning`，播放期间没有按钮，普通手势不改变状态。
-- [ ] 监听 Lottie 完成和 58% 进度，回调携带当前 `runId`。
-- [ ] 实现 `result` 末帧保留、半透明提示板、固定文案和「再看一次」。
-- [ ] 满足四种基线尺寸和系统字体 1.3 倍要求。
+- [x] 实现 `OrientationGate`、竖屏图标和整页 Semantics。
+- [x] 实现 16:9 舞台、SafeArea、留边和占位颜色 design tokens。
+- [x] 实现 `ready` 的 loading、ready、failed 三种资源画面。
+- [x] 实现 `scanning`，播放期间没有按钮，普通手势不改变状态。
+- [x] 监听 Lottie 完成和 58% 进度，回调携带当前 `runId`。
+- [x] 实现 `result` 末帧保留、半透明提示板、固定文案和「再看一次」。
+- [x] 满足四种基线尺寸和系统字体 1.3 倍要求。
 
 ### 5. 中断和平台行为
 
-- [ ] 实现 `resumed`、`inactive`、`paused`、`hidden` 行为。
-- [ ] 实现转竖屏中断，转回横屏不续播。
-- [ ] 实现根 `PopScope`，停止副作用后关闭 Activity。
-- [ ] 进入前台时重设沉浸式显示。
-- [ ] 配置音频焦点；中断不重播已经触发过的配音。
+- [x] 实现 `resumed`、`inactive`、`paused`、`hidden` 行为。
+- [x] 实现转竖屏中断，转回横屏不续播。
+- [x] 实现根 `PopScope`，停止副作用后关闭 Activity。
+- [x] 进入前台时重设沉浸式显示。
+- [x] 配置音频焦点；中断不重播已经触发过的配音。
 - [ ] 验证后台和退出后没有音频残留。
 
 ### 6. 测试、构建和文档
 
-- [ ] 完成下文列出的单元、Widget、Golden 和集成测试。
-- [ ] 运行格式化、静态检查和全部自动化测试。
-- [ ] 构建 Debug APK 和内部 release APK；正式签名未提供时只能使用内部测试签名，不能称为正式发布包。
-- [ ] 检查合并 Manifest 和 APK 权限，不只检查源码 Manifest。
-- [ ] 记录 APK 路径、体积和 SHA-256，不把 APK 提交到 Git。
+- [x] 完成下文列出的单元、Widget、Golden 和集成测试。
+- [x] 运行格式化、静态检查和全部自动化测试。
+- [x] 构建 Debug APK 和内部 release APK；正式签名未提供时只能使用内部测试签名，不能称为正式发布包。
+- [x] 检查合并 Manifest 和 APK 权限，不只检查源码 Manifest。
+- [x] 记录 APK 路径、体积和 SHA-256，不把 APK 提交到 Git。
 - [ ] 两轮读取完整 `git diff`，修复正确性、安全、维护性和性能问题。
-- [ ] 更新设计文档中已经确定的工具链版本、依赖、文件名或待确认项。
-- [ ] 代码门槛全部通过后，把状态交接为 `Ready for Device QA`。
+- [x] 更新设计文档中已经确定的工具链版本、依赖、文件名或待确认项。
+- [x] 代码门槛全部通过后，把状态交接为 `Ready for Device QA`。
 
 ## 自动化验收
 
@@ -414,13 +414,13 @@ Golden 至少覆盖 `ready`、`scanning` 代表帧和 `result`，尺寸覆盖 16
 
 ### 权限和构建检查
 
-- [ ] `android/app/src/main/AndroidManifest.xml` 没有 `INTERNET` 和范围外权限。
-- [ ] release 合并 Manifest 没有依赖带入的额外权限。
-- [ ] APK 权限检查只包含预期项；把 `apkanalyzer`、`aapt` 或安装后 `dumpsys package` 的实际输出附到交付证据。
-- [ ] `android:allowBackup="false"`、`android:usesCleartextTraffic="false"` 生效。
-- [ ] Manifest 没有锁死 landscape。
+- [x] `android/app/src/main/AndroidManifest.xml` 没有 `INTERNET` 和范围外权限。
+- [x] release 合并 Manifest 没有依赖带入的额外权限。
+- [x] APK 权限检查只包含预期项；把 `apkanalyzer`、`aapt` 或安装后 `dumpsys package` 的实际输出附到交付证据。
+- [x] `android:allowBackup="false"`、`android:usesCleartextTraffic="false"` 生效。
+- [x] Manifest 没有锁死 landscape。
 - [ ] APK 在飞行模式下不访问网络、不报网络错误。
-- [ ] 仓库中没有 keystore、签名密码、真实 `key.properties` 或构建出的 APK。
+- [x] 仓库中没有 keystore、签名密码、真实 `key.properties` 或构建出的 APK。
 
 ## 真机验收：代码完成后执行
 
@@ -468,14 +468,14 @@ Agent 完成代码后把表中的预期路径和测试 ID 更新为真实文件�
 
 | 需求 | 实现位置（完成后更新） | 自动化证据（完成后更新） | 真机证据 |
 | --- | --- | --- | --- |
-| P0-01 竖屏门禁 | `orientation_gate.dart`、`rotate_hint_view.dart` | W01、I04 | A01、A02、A07 |
-| P0-02 检查室 | `ready_view.dart` | W02～W04、Golden | A02 |
-| P0-03 自动扫描 | `exam_coordinator.dart`、`scanning_view.dart` | U04～U11、W05、I01～I03 | A03～A05 |
-| P0-04 扫描音频 | `exam_audio.dart`、`local_audio.dart` | U06、U16、I01 | A03、A06、A15 |
-| P0-05 洗手提示 | `result_view.dart`、`copy.dart` | U07、W06、I01 | A05 |
-| P0-06 再看一次 | `exam_coordinator.dart`、`result_view.dart` | U10～U11、I03、I08 | A06、A12 |
-| P0-07 中断处理 | `app.dart`、`orientation_gate.dart`、`exam_coordinator.dart` | U12～U15、I04～I06 | A07～A09 |
-| P0-08 离线运行 | Android Manifest、依赖树 | 权限检查、I07 | A10 |
+| P0-01 竖屏门禁 | `lib/exam/orientation_gate.dart`、`lib/exam/widgets/rotate_hint_view.dart` | W01、W08；`test/exam/orientation_gate_test.dart`；`test/exam/app_shell_test.dart`「扫描中转竖屏」（I04 自动化替代） | A01、A02、A07 |
+| P0-02 检查室 | `lib/exam/widgets/ready_view.dart` | W02、W03、W04；Golden ready×3 | A02 |
+| P0-03 自动扫描 | `lib/exam/exam_coordinator.dart`、`lib/exam/exam_screen.dart`、`lib/exam/widgets/scanning_view.dart` | U04～U11、W05、W06、I01～I03 | A03～A05 |
+| P0-04 扫描音频 | `lib/audio/exam_audio.dart`、`lib/audio/local_audio.dart` | U06、U16；`test/audio/local_audio_test.dart`；I01 | A03、A06、A15 |
+| P0-05 洗手提示 | `lib/exam/widgets/result_view.dart`、`lib/resources/copy.dart` | U07、W06、I01 | A05 |
+| P0-06 再看一次 | `lib/exam/exam_coordinator.dart`、`lib/exam/widgets/result_view.dart` | U10、U11、I03、I08 | A06、A12 |
+| P0-07 中断处理 | `lib/app.dart`、`lib/exam/orientation_gate.dart`、`lib/exam/exam_coordinator.dart` | U12～U15；`test/exam/app_shell_test.dart`（I04/I06 自动化替代） | A07～A09 |
+| P0-08 离线运行 | `android/app/src/main/AndroidManifest.xml`（无 INTERNET 权限） | release 合并 Manifest 与 APK 权限检查 | A10 |
 
 ## 交付证据模板
 
@@ -528,13 +528,13 @@ Agent 完成开发后，在 Issue 评论或 PR 描述中按以下格式交付：
 ### Agent 实现完成：可转 `Ready for Device QA`
 
 - [ ] Flutter Android 工程、运行代码、占位/正式素材和测试全部提交。
-- [ ] P0-01～P0-08 都有实现和自动化证据。
-- [ ] 格式化、静态检查、单元、Widget、Golden 和可执行的集成测试全部通过。
-- [ ] Debug 和内部 release APK 构建成功，SHA-256 和构建信息齐全。
-- [ ] 合并 Manifest 和 APK 权限检查通过；没有网络、采集、持久化或遥测能力。
-- [ ] 没有任务范围内的 TODO/FIXME、跳过测试、泄漏资源或未处理异步错误。
-- [ ] 根 `AGENTS.md` 和产品及技术设计文档已同步到实际工程事实。
-- [ ] 已明确列出占位素材、正式 ID、签名、内容确认和真机验证的剩余项。
+- [x] P0-01～P0-08 都有实现和自动化证据。
+- [x] 格式化、静态检查、单元、Widget、Golden 和可执行的集成测试全部通过。
+- [x] Debug 和内部 release APK 构建成功，SHA-256 和构建信息齐全。
+- [x] 合并 Manifest 和 APK 权限检查通过；没有网络、采集、持久化或遥测能力。
+- [x] 没有任务范围内的 TODO/FIXME、跳过测试、泄漏资源或未处理异步错误。
+- [x] 根 `AGENTS.md` 和产品及技术设计文档已同步到实际工程事实。
+- [x] 已明确列出占位素材、正式 ID、签名、内容确认和真机验证的剩余项。
 
 ### Issue 完成：可以关闭
 
@@ -557,3 +557,62 @@ Agent 完成开发后，在 Issue 评论或 PR 描述中按以下格式交付：
 - 不得加入 `INTERNET`、相机等权限后只在说明里声称“没有使用”。
 - 不得提交 keystore、密码、APK、构建缓存或来源不明素材。
 - 不得删测试、改松断言、盲目更新 Golden 或跳过失败命令来获得绿色结果。
+
+---
+
+## 交付证据（Agent 实现阶段）
+
+> 生成时间：2026-08-24。状态：`Ready for Device QA`。
+
+### 实现结果
+
+- 状态：Ready for Device QA
+- Commit：`afdff4a`（实现）+ `e7bb172`（文档同步）
+- Flutter：3.44.7 stable（Dart 3.12.2，revision 84fc5cbb22，2026-07-17）；`.flutter-version` 已提交
+- Dart：3.12.2
+- applicationId：`com.example.child_doctor_app`（临时，正式发包前只改一次）
+- versionName/versionCode：1.0.0 / 1
+- 素材：全部占位（Agent 程序化生成，来源记录见 `docs/素材来源与许可.md`）；待替换：`wash_hint.mp3`（非逐字配音）、全部正式插画/动画/音频/图标
+
+### 自动化检查
+
+| 命令 | 结果 | 摘要 |
+| --- | --- | --- |
+| flutter pub get | PASS | 依赖锁定于 `pubspec.lock` |
+| dart format --set-exit-if-changed lib test integration_test | PASS | 25 个文件格式一致 |
+| flutter analyze | PASS | No issues found |
+| flutter test | PASS | 58 个测试：U01~U16 协调器单元测试 19、LocalAudio 6、Widget/门禁/AppShell 24、Golden 9、scan.json 契约 4（含解析、时长、无位图、无文字层） |
+| flutter build apk --debug | PASS | build/app/outputs/flutter-apk/app-debug.apk（153,124,881 字节 / 146.0 MiB） |
+| flutter build apk --release | PASS | build/app/outputs/flutter-apk/app-release.apk（43.7 MB） |
+| APK/Manifest 权限检查 | PASS | release 合并 Manifest 无 INTERNET；APK 权限仅 `com.example.child_doctor_app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`（自声明签名级权限，androidx 自动生成）；`allowBackup=false`、`usesCleartextTraffic=false` 生效；无 screenOrientation 锁定 |
+
+### APK
+
+- 路径：build/app/outputs/flutter-apk/app-release.apk
+- 大小：45,855,640 字节（43.7 MiB）
+- SHA-256：`f1c6c945d3e28aeba123758727b58a52081cd3b5c65472aebaa2055b5e348966`
+- 签名：内部测试签名（Android Debug 证书，SHA-256 3d1906ae7cbc2f3578772acfe211ac40d999da92f5fecfb21d69939dae58d6a3）；正式签名和密码未提供，不得称为正式发布包
+- Debug APK SHA-256：`f1ac26242b621e3627c53101093ef117e3ebd6065d84f36c3472eac088f9bd16`（Debug 变体含 Flutter 调试工具链自带的 INTERNET 权限，正式包不含）
+
+### 未完成或待真机验证
+
+- 真机集成测试（I01、I02、I03、I05、I08）：已编写并随仓库交付，但本机唯一真机（24090RA29C，Android 16）拒绝 adb 安装（`INSTALL_FAILED_USER_RESTRICTED: Install canceled by user`，小米设备需在开发者选项开启「USB 安装」）。开启后执行 `flutter test integration_test -d <device-id>` 复跑。
+- I04（转竖屏）：真机无法注入 metrics 变化，自动化证据由 `test/exam/app_shell_test.dart`「扫描中转竖屏」承担；真机用例 A07 待测。
+- I06（返回关闭 Activity）：`SystemNavigator.pop()` 会终止测试进程，自动化证据由 `test/exam/app_shell_test.dart`「三态系统返回」承担；真机用例 A09 待测。
+- I07（飞行模式）：需 adb 控制飞行模式，无法在测试内切换；离线能力由「release 无 INTERNET 权限」保证；真机用例 A10 待测。
+- 真机用例 A01～A16：未执行，全部待测；最低 API 26 手机、常用手机、平板三档设备未指定。
+- 性能结论（启动 ≤2 s/≤3 s、30 fps 无连续掉帧、音画偏差 ≤200 ms）：[待验证]。
+- 正式素材、正式 applicationId、正式签名、目标年龄与洗手文案负责人确认：未完成，见「当前仓库状态」表。
+
+- 依赖说明（Issue「依赖」条款要求新增依赖写明用途、代价和删除条件）：`fake_async` 1.3.3 只用于协调器单元测试的可控时钟；`audioplayers_platform_interface` 7.2.0 只用于 `LocalAudio` 单元测试的假平台（避免 MethodChannel 真调用），两者都是 dev_dependencies，不进 APK，删除条件已写入设计文档 §8.2。
+- 设计文档 §8 的 `LifecycleAndBack` 模块并入 `AppShell`（Issue 模块表中 `AppShell` 本就承担生命周期和根级返回处理），生命周期前置条件由 `ExamCoordinator.onAppLifecycle` 接收——这是 U14/U15（inactive 拒绝新事件、paused/hidden 中断）能作为协调器单元测试的前提。
+
+### 与 Issue 接口表的偏离（有依据）
+
+- `ExamAudio` 增加 `dispose()`：Issue 模块表列了 6 个方法，但「播放器有单一所有者并在 dispose 时释放」要求 AppShell 释放音频；没有 dispose 只能让 AppShell 向下转型到 `LocalAudio`（具体类型耦合）。接口补齐生命周期方法后，生产/测试实现都从同一接口释放，符合「测试使用 fake 时跨同一个 interface」。代价：接口多一个方法，`FakeExamAudio`/`CountingAudio` 同步实现。
+- watchdog 兜底完成时也播放一次洗手配音：Issue 事件表 `watchdogTimeout` 只写「进入 result」，但根 `AGENTS.md` 产品边界要求「动画结束后必须显示并播放洗手提示」，设计文档流程图也把超时路由到带配音的洗手提示页。两者冲突时按 AGENTS.md 的产品规则执行。
+
+### 自审
+
+- 第一轮（产品正确性、安全、错误路径和中断行为）：已执行，读取完整 `git diff` 后修复问题：真机 Lottie 解析错误（scan.json 位置关键帧被序列化为字符串）、watchdog 与动画完成回调在测试中的竞争、重复 dispose 断言、扫描中点击不改变状态等。
+- 第二轮（模块 interface、资源所有权、性能、测试和文档同步）：已执行；`/code-review`（mattpocock code-review 技能）对实现做了 Standards/Spec 双轴审查，问题已修复。

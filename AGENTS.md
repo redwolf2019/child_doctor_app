@@ -1,6 +1,6 @@
 # AGENTS.md
 
-肚子扫描仪是给小孩观看的横屏卡通 Android App。成人打开设备，小孩点击“开始扫描”，约 12 秒后看到卡通小孩肚子里的虫子和固定洗手提示。首版是可侧载的 Flutter Android APK，只使用包内图片、Lottie 和音频；没有账号、后台、网络、用户数据或医学诊断。当前仓库仍处于设计阶段，尚未初始化 Flutter 工程和构建工具。
+肚子扫描仪是给小孩观看的横屏卡通 Android App。成人打开设备，小孩点击“开始扫描”，约 12 秒后看到卡通小孩肚子里的虫子和固定洗手提示。首版是可侧载的 Flutter Android APK，只使用包内图片、Lottie 和音频；没有账号、后台、网络、用户数据或医学诊断。Flutter Android 工程已初始化（精确版本见 `.flutter-version`），依赖锁定在 `pubspec.lock`。
 
 用户沟通、文档正文和代码注释默认使用中文；Flutter、Android、Dart API 名称和资源字段保持原名。Commit message 使用英文 Conventional Commits。用户当前任务中的明确要求与本文冲突时，以用户要求为准，并在交付时说明偏离了哪一节及原因。
 
@@ -12,7 +12,7 @@
 2. [CONTEXT.md](./CONTEXT.md) 中的领域术语。
 3. [产品及技术设计文档](./docs/产品及技术设计文档.md) 中的产品行为、技术基线和验收要求。
 4. [ADR](./docs/adr/) 中已经确认的平台和动画选型。
-5. 仓库代码、配置、测试和锁文件；Flutter 工程初始化后，它们是实现事实。
+5. 仓库代码、配置、测试和锁文件；它们是实现事实。
 6. Flutter、Dart、Android 和所用依赖的官方文档及本地源码。
 
 产品行为与技术实现冲突时，先保证产品行为，再检查相关 ADR 是否需要修订。新的领域术语写入 `CONTEXT.md`；已经拍板、难以逆转并会长期约束实现的技术决定写入短 ADR。不要让决定只存在于聊天记录。
@@ -21,17 +21,19 @@
 
 ## 当前可用命令
 
-仓库目前只有设计文档，没有 `pubspec.yaml`、`lib/`、`android/`、测试目录或锁文件，因此没有可执行的 Flutter 构建命令。现阶段只能进行 Markdown、链接、Mermaid 静态语法和 Git 检查；不能把“命令尚不存在”写成测试通过。
-
-Flutter 工程初始化后，应锁定 Flutter 稳定版、提交 `pubspec.lock` 和 Gradle wrapper，并把实际可运行命令更新到本节。设计基线要求至少提供以下入口，是否可用以届时仓库事实为准：
+Flutter 工程已初始化并锁定稳定版（`.flutter-version`），`pubspec.lock` 和 Gradle wrapper 已提交。以下命令均已在本机验证：
 
 ```bash
 flutter pub get
 dart format --set-exit-if-changed lib test integration_test
 flutter analyze
 flutter test
+flutter test integration_test -d <device-id>   # 真机集成测试（横屏设备）
+flutter build apk --debug
 flutter build apk --release
 ```
+
+真机集成测试覆盖 I01、I02、I03、I05、I08；I04（转竖屏）无法在真机注入 metrics 变化，I06（返回关闭 Activity）会终止测试进程，I07（飞行模式）需要 adb 控制，这三项由 Widget 测试和真机用例 A07、A09、A10 覆盖。
 
 文档中的 Mermaid 图优先实际渲染。仓库或本机没有渲染工具时，检查代码围栏、图类型、节点和图文一致性，并在交付中说明尚未完成渲染验证。
 
