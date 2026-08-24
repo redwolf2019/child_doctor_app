@@ -1,0 +1,34 @@
+name: child_doctor_app
+description: 给小孩看的离线卡通教育演示：模拟扫描卡通小孩的肚子，最后显示固定洗手提示。
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  lottie: 3.5.1
+  audioplayers: 6.8.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: 6.0.0
+  fake_async: 1.3.3
+  audioplayers_platform_interface: 7.2.0
+
+flutter:
+  uses-material-design: true
+
+  # 逐个声明，避免目录里临时文件被误打包。
+  assets:
+    - assets/images/exam_room.webp
+    - assets/lottie/scan.json
+    - assets/audio/scan_loop.mp3
+    - assets/audio/worm_cue.mp3
+    - assets/audio/wash_hint.mp3
