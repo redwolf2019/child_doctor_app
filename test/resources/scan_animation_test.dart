@@ -30,8 +30,17 @@ void main() {
     expect(composition.duration.inMilliseconds, inInclusiveRange(11500, 12500));
   });
 
-  test('scan.json 不引用外部位图', () {
-    expect(composition.images, isEmpty);
+  test('scan.json 只引用包内同目录位图，不引用远程 URL', () {
+    expect(composition.images.keys, unorderedEquals(['ready', 'mid', 'close']));
+    for (final image in composition.images.values) {
+      expect(image.fileName, isNot(startsWith('http')));
+      expect(image.fileName, isNot(startsWith('data:')));
+      expect(image.fileName, isNot(contains('..')));
+      expect(image.dirName, anyOf('', './'));
+    }
+    expect(composition.images['ready']!.fileName, 'scan_ready.webp');
+    expect(composition.images['mid']!.fileName, 'scan_mid.webp');
+    expect(composition.images['close']!.fileName, 'scan_closeup.webp');
   });
 
   test('scan.json 不含文字层', () {

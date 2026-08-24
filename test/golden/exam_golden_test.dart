@@ -8,7 +8,7 @@ import '../exam/test_helpers.dart';
 
 /// Golden 基线：ready、scanning 代表帧、result × 16:9 / 20:9 / 4:3。
 ///
-/// 基线由占位素材生成；正式视觉稿到位后统一更新基线。
+/// 基线由当前检查室插画和扫描关键帧生成；正式视觉稿到位后统一更新基线。
 /// 生成命令：flutter test --update-goldens test/golden
 void main() {
   const sizes = <String, Size>{

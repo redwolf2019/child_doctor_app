@@ -29,6 +29,9 @@ flutter:
   assets:
     - assets/images/exam_room.webp
     - assets/lottie/scan.json
+    - assets/lottie/scan_ready.webp
+    - assets/lottie/scan_mid.webp
+    - assets/lottie/scan_closeup.webp
     - assets/audio/scan_loop.mp3
     - assets/audio/worm_cue.mp3
     - assets/audio/wash_hint.mp3

@@ -22,7 +22,7 @@ void main() {
     audio = FakeExamAudio();
     coordinator = ExamCoordinator(audio: audio);
     await tester.pumpWidget(AppShell(coordinator: coordinator, audio: audio));
-    await settleAsync(tester);
+    await waitUntilResourcesResolved(tester, coordinator);
   }
 
   testWidgets('切后台执行 abort，回来后是检查室', (tester) async {
@@ -136,7 +136,7 @@ void main() {
     audio = FakeExamAudio()..failPrepare = true;
     coordinator = ExamCoordinator(audio: audio);
     await tester.pumpWidget(AppShell(coordinator: coordinator, audio: audio));
-    await settleAsync(tester);
+    await waitUntilResourcesResolved(tester, coordinator);
 
     expect(coordinator.resourceStatus, ResourceStatus.ready);
     expect(find.text(Copy.startScan), findsOneWidget);

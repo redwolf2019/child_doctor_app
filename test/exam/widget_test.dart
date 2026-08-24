@@ -3,8 +3,10 @@ import 'package:child_doctor_app/exam/exam_coordinator.dart';
 import 'package:child_doctor_app/exam/exam_phase.dart';
 import 'package:child_doctor_app/exam/exam_screen.dart';
 import 'package:child_doctor_app/exam/widgets/ready_view.dart';
+import 'package:child_doctor_app/exam/widgets/result_view.dart';
 import 'package:child_doctor_app/exam/widgets/rotate_hint_view.dart';
 import 'package:child_doctor_app/resources/copy.dart';
+import 'package:child_doctor_app/resources/design_tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lottie/lottie.dart';
@@ -37,12 +39,12 @@ void main() {
       final audio = FakeExamAudio();
       final coordinator = ExamCoordinator(audio: audio);
       await tester.pumpWidget(AppShell(coordinator: coordinator, audio: audio));
-      await settleAsync(tester);
+      await waitUntilResourcesResolved(tester, coordinator);
       expect(find.byType(RotateHintView), findsOneWidget);
 
       tester.view.physicalSize = const Size(800, 360);
       await tester.pump();
-      await settleAsync(tester);
+      await waitUntilResourcesResolved(tester, coordinator);
 
       expect(find.byType(RotateHintView), findsNothing);
       expect(find.text(Copy.startScan), findsOneWidget);
@@ -169,17 +171,24 @@ void main() {
       await tester.pump();
     });
 
-    testWidgets('result 提示板宽度不超过舞台 75%', (tester) async {
+    testWidgets('result 提示板在舞台右侧，宽度不超过 38%，文案左对齐', (tester) async {
       final coordinator = await pumpScanning(tester);
       await playScanThrough(tester);
 
-      final stage = tester.getSize(find.byKey(ExamScreen.stageKey));
-      final panel = find.ancestor(
-        of: find.text(Copy.washHint),
-        matching: find.byType(Container),
+      final stage = tester.getRect(find.byKey(ExamScreen.stageKey));
+      final panel = tester.getRect(find.byKey(ResultView.panelKey));
+      expect(
+        panel.width,
+        lessThanOrEqualTo(
+          stage.width * DesignTokens.resultPanelMaxWidthRatio + 0.1,
+        ),
       );
-      final panelSize = tester.getSize(panel.first);
-      expect(panelSize.width, lessThanOrEqualTo(stage.width * 0.75 + 0.1));
+      expect(panel.center.dx, greaterThan(stage.center.dx));
+      expect(panel.right, lessThanOrEqualTo(stage.right + 0.1));
+
+      final washHint = tester.widget<Text>(find.text(Copy.washHint));
+      expect(washHint.textAlign, TextAlign.start);
+      expect(washHint.maxLines, DesignTokens.washHintMaxLines);
 
       coordinator.abort();
       await tester.pump();

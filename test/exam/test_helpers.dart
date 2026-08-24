@@ -1,5 +1,6 @@
 import 'package:child_doctor_app/app.dart';
 import 'package:child_doctor_app/exam/exam_coordinator.dart';
+import 'package:child_doctor_app/exam/exam_phase.dart';
 import 'package:child_doctor_app/exam/exam_screen.dart';
 import 'package:child_doctor_app/resources/asset_paths.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,23 @@ Future<void> settleAsync(
   await tester.pump();
 }
 
+/// 等到 Lottie（含包内位图）加载结束。竖屏时主按钮不在树上，只能看资源状态。
+Future<void> waitUntilResourcesResolved(
+  WidgetTester tester,
+  ExamCoordinator coordinator,
+) async {
+  for (var i = 0; i < 80; i++) {
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
+    await tester.pump();
+    if (coordinator.resourceStatus != ResourceStatus.loading) {
+      await tester.pump();
+      return;
+    }
+  }
+}
+
 /// 推进扫描动画直到自然完成。
 ///
 /// Ticker 的第一次 tick 只记录起点（elapsed = 0），所以按 6s + 2s + 4s
@@ -64,9 +82,8 @@ Future<FakeExamAudio> pumpApp(
   final audio = FakeExamAudio();
   final coordinator = ExamCoordinator(audio: audio);
   await tester.pumpWidget(AppShell(coordinator: coordinator, audio: audio));
-  if (waitForResources) {
-    await settleAsync(tester);
-  }
+  // 位图 Lottie 必须加载完，否则缓存里会留下未完成的 Future，拖垮后续用例。
+  await waitUntilResourcesResolved(tester, coordinator);
   return audio;
 }
 

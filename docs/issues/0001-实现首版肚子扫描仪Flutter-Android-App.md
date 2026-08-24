@@ -141,15 +141,15 @@ enum ResourceStatus { loading, ready, failed }
 - `ready + ready` 显示唯一主按钮「开始扫描」。
 - `ready + failed` 显示「加载失败，请重新打开应用」，不显示不可用按钮。
 - `scanning` 不显示按钮；点击、双击和长按都没有业务效果。
-- `result` 保留 Lottie 末帧，叠加宽度不超过舞台 75% 的浅色半透明提示板。提示板显示不超过两行的 `washHint` 和「再看一次」。
+- `result` 保留 Lottie 末帧，叠加贴在舞台右侧、宽度不超过舞台 38% 的浅色提示板。提示板左对齐显示不超过四行的 `washHint` 和「再看一次」，不挡住肚子近景。
 - 竖屏门禁有一个横向设备图标，整页 Semantics 文案为「请把设备横过来」。
-- 占位设计色固定为：舞台外 `#16324F`、主按钮 `#FFB703`、按钮文字 `#3A2A00`、结果板 `#FFF8E7` 且 94% 不透明、正文 `#203040`。正式视觉稿到位后统一替换 design tokens 和 Golden，不能散落硬编码。
+- 占位设计色固定为：舞台外 `#16324F`、主按钮 `#FFB703`、按钮文字 `#3A2A00`、结果板 `#FFF8E7` 且 96% 不透明、正文 `#203040`。正式视觉稿到位后统一替换 design tokens 和 Golden，不能散落硬编码。
 
 ### 扫描时序
 
 - Lottie 以 composition 完成回调作为正常结束条件。
 - 开发基线时长是 12,000 ms；占位和正式素材都应在 11,500～12,500 ms。
-- 正式/占位 Lottie 基线：1920 × 1080、30 fps、约 360 帧、全矢量、无外部位图和文字。
+- 正式/占位 Lottie 基线：1920 × 1080、30 fps、约 360 帧、无文字；三张包内关键帧 WebP 写进 `pubspec.yaml`，不引用远程 URL。
 - 扫描底音从第 0 帧开始，在完成、`abort` 或 watchdog 时停止。
 - 动画进度第一次达到 58% 时播放一次虫子音效。
 - watchdog 是 `composition.duration + 1,000 ms`，不能写死 13 秒，也不能代替完成回调。
@@ -171,7 +171,7 @@ enum ResourceStatus { loading, ready, failed }
 | 文件 | 必须满足的规格 | 验收重点 |
 | --- | --- | --- |
 | `assets/images/exam_room.webp` | 1920 × 1080、sRGB，不含按钮和文字 | `BoxFit.contain` 下关键内容不被裁 |
-| `assets/lottie/scan.json` | 1920 × 1080、30 fps、约 360 帧、11.5～12.5 秒、全矢量、无文字和外部位图 | Flutter 真机无缺图、遮罩错位或不支持效果 |
+| `assets/lottie/scan.json` | 1920 × 1080、30 fps、约 360 帧、11.5～12.5 秒、无文字；三张包内关键帧 WebP | Flutter 真机无缺图、第 0 帧对齐检查室 |
 | `assets/audio/scan_loop.mp3` | 单声道、44.1 kHz、建议 96～128 kbps、可无缝循环 | 循环点无爆音；中断后 200 ms 内停止 |
 | `assets/audio/worm_cue.mp3` | 单声道、44.1 kHz、建议 96～128 kbps、单次短音效 | 不刺耳，不覆盖洗手配音 |
 | `assets/audio/wash_hint.mp3` | 单声道、44.1 kHz、建议 96～128 kbps | 正式版逐字等于 `washHint`，前后无长静音 |
