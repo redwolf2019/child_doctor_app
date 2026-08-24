@@ -21,9 +21,18 @@
 
 ## 当前可用命令
 
-Flutter 工程已初始化并锁定稳定版（`.flutter-version`），`pubspec.lock` 和 Gradle wrapper 已提交。以下命令均已在本机验证：
+Flutter 工程已初始化并锁定稳定版（`.flutter-version`），`pubspec.lock` 和 Gradle wrapper 已提交。以下命令均已在本机验证；常用入口在根目录 `Makefile`：
 
 ```bash
+make run            # 构建 debug APK，安装并启动到 USB 真机（DEVICE=<serial> 可指定设备）
+make run-attach     # flutter run 附加到真机（热重载）
+make install        # 只安装已构建的 debug APK
+make uninstall      # 卸载
+make check          # format + analyze + test
+make test-device    # 真机集成测试（横屏设备）
+make build-debug / make build-release
+
+# Makefile 包装的原始命令：
 flutter pub get
 dart format --set-exit-if-changed lib test integration_test
 flutter analyze
