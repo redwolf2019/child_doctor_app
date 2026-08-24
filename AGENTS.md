@@ -60,7 +60,7 @@ flutter build apk --release
 ## 产品边界
 
 - 首版只构建可侧载的 Flutter Android APK，最低 Android 8.0（API 26）；不做 iOS、应用商店或远程素材更新。
-- App 横屏打开后直接进入检查室；竖屏只显示转横提示。不增加标题页、菜单、设置、账号、埋点、广告或付费入口。
+- App 打开即锁定横屏（ADR 0003），直接进入检查室；竖屏门禁保留为纵深防御。不增加标题页、菜单、设置、账号、埋点、广告或付费入口。
 - 屏幕上的卡通小孩是固定角色，不是正在观看的真实小孩。禁止调用相机、传感器或其他数据制造“正在扫描你”的误解。
 - 检查不是问诊。界面不展示病名、器官标注、医学报告或针对真实小孩的结论。
 - 业务状态只有 `ready`、`scanning` 和 `result`。竖屏提示是显示门禁，不是第四个业务状态。
@@ -74,7 +74,7 @@ flutter build apk --release
 
 - 首版是单路由、纯本地、内存状态的 Flutter 应用。不要引入后台、网络层、数据库、通用状态管理框架、路由框架或依赖注入容器。
 - `ExamCoordinator` 是检查状态和副作用编排的唯一写入口。Widget 只渲染只读状态并转发用户、动画和生命周期事件。
-- `OrientationGate` 独立处理方向。AndroidManifest 和 `SystemChrome.setPreferredOrientations` 都不能锁死 landscape，否则无法可靠显示竖屏门禁。
+- App 在 AndroidManifest 锁定 `sensorLandscape`（ADR 0003），横屏自动生效。`OrientationGate` 独立处理方向并保留：若撤销锁定，门禁立即可用；不能用锁屏掩盖竖屏适配缺陷（门禁有独立测试）。
 - `ExamAudio` 隐藏本地播放器、循环、停止和资源切换。生产实现和测试替身都从该接口进入；Widget 不直接持有 `AudioPlayer`。
 - 扫描底音、虫子音效和洗手配音使用独立播放器，避免互相打断或叠音。`stopAll` 必须可重复调用并吞并底层停止错误。
 - Lottie 完成回调是正常结束条件，实际动画时长加 1 秒的 watchdog 只做卡死兜底。不要用固定 12 秒计时器代替完成回调。
@@ -159,7 +159,7 @@ flutter build apk --release
 
 ## 常见错误
 
-- 为了“强制横屏”锁定 Android Activity，导致竖屏门禁永远无法可靠触发。
+- 用锁定横屏掩盖竖屏适配缺陷：锁屏是产品决定（ADR 0003），门禁 Widget 和测试仍然独立存在并覆盖竖屏行为。
 - 把竖屏提示塞进 `ExamPhase`，让设备方向和检查生命周期争用同一状态机。
 - 在 Widget `build` 中播放音频、启动 timer 或调用 `abort`，造成重建时重复触发。
 - 用固定 12 秒计时器判断扫描完成，忽略 Lottie 实际时长和完成回调。

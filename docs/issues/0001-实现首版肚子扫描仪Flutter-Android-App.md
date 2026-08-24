@@ -120,8 +120,8 @@ enum ResourceStatus { loading, ready, failed }
 
 ### 方向和生命周期
 
-- 不在 AndroidManifest 设置 `android:screenOrientation="landscape"`。
-- 不调用只允许 landscape 的 `SystemChrome.setPreferredOrientations`。
+- 产品决定（ADR 0003）：在 AndroidManifest 设置 `android:screenOrientation="sensorLandscape"`，打开即横屏，两个横屏方向跟随传感器；竖屏门禁保留为纵深防御，撤销锁定时立即可用。
+- 不调用 `SystemChrome.setPreferredOrientations`（只在 Flutter 初始化后生效，不如 manifest 声明可靠）。
 - `MediaQuery.size.height > MediaQuery.size.width` 时只显示竖屏门禁。
 - `OrientationGate` 用 `WidgetsBindingObserver.didChangeMetrics` 识别横竖变化，只在方向真正改变时发一次事件；不能在 `build` 中调用 `abort`。
 - 进入竖屏时，如果当前是 `scanning` 或 `result`，执行 `abort`。再次横屏显示 `ready`。
@@ -443,8 +443,8 @@ Golden 至少覆盖 `ready`、`scanning` 代表帧和 `result`，尺寸覆盖 16
 
 | ID | 操作 | 预期结果 | 证据 | 结果 |
 | --- | --- | --- | --- | --- |
-| A01 | 竖屏冷启动 | 第一屏只有转横提示，检查室按钮不露出 | 照片/录屏 | 待测 |
-| A02 | 转成两个方向的横屏 | 自动显示检查室；背景不拉伸；按钮不碰挖孔、圆角和手势区 | 两个方向截图 | 待测 |
+| A01 | 冷启动 | 自动进入横屏检查室，不出现竖屏闪屏；门禁不露出 | 照片/录屏 | 待测 |
+| A02 | 设备朝两个方向横放 | 自动跟随进入对应横屏检查室；背景不拉伸；按钮不碰挖孔、圆角和手势区 | 两个方向截图 | 待测 |
 | A03 | 连点「开始扫描」5 次 | 只开始一轮，只播放一份扫描底音 | 录屏和日志 | 待测 |
 | A04 | 扫描期间点击、双击和长按 | 不跳过、不暂停、不出现按钮 | 录屏 | 待测 |
 | A05 | 使用正式时长正常看完 | 11.5～12.5 秒进入结果；配音一次；文字逐字一致 | 录屏和计时 | 待测 |
@@ -550,7 +550,7 @@ Agent 完成开发后，在 Issue 评论或 PR 描述中按以下格式交付：
 - 不得因为占位素材能播放就宣称正式内容完成。
 - 不得因为模拟器通过就勾选真机用例或低端机性能。
 - 不得用 `Future.delayed(12s)` 代替 Lottie 完成回调。
-- 不得锁死 Activity 为 landscape 来隐藏竖屏适配问题。
+- 不得用锁横屏代替竖屏适配：锁屏是产品决定（ADR 0003），门禁 Widget 和测试仍然独立覆盖竖屏行为。
 - 不得在 Widget `build` 中启动播放、计时或状态迁移。
 - 不得复用一个播放器承担三类声音。
 - 不得把音频失败变成扫描失败，也不得忽略 Lottie 加载失败。
@@ -601,6 +601,7 @@ Agent 完成开发后，在 Issue 评论或 PR 描述中按以下格式交付：
 - I06（返回关闭 Activity）：`SystemNavigator.pop()` 会终止测试进程，自动化证据由 `test/exam/app_shell_test.dart`「三态系统返回」承担；真机用例 A09 待测。
 - I07（飞行模式）：需 adb 控制飞行模式，无法在测试内切换；离线能力由「release 无 INTERNET 权限」保证；真机用例 A10 待测。
 - 真机用例 A01～A16：未执行，全部待测；最低 API 26 手机、常用手机、平板三档设备未指定。
+
 - 性能结论（启动 ≤2 s/≤3 s、30 fps 无连续掉帧、音画偏差 ≤200 ms）：[待验证]。
 - 正式素材、正式 applicationId、正式签名、目标年龄与洗手文案负责人确认：未完成，见「当前仓库状态」表。
 
